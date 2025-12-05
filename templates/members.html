@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-md-7">
+    <div class="card-custom">
+      <h5 class="mb-3">Members</h5>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead><tr><th>ID</th><th>Name</th><th>Email</th></tr></thead>
+          <tbody>
+            {% for m in members %}
+            <tr>
+              <td>{{ m.member_id }}</td>
+              <td class="fw-semibold">{{ m.full_name }}</td>
+              <td class="kv">{{ m.email }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-5">
+    <div class="card-custom">
+      <h5 class="mb-3">Add Member</h5>
+      <form method="post">
+        <div class="mb-2"><input name="full_name" class="form-control" placeholder="Full name" required></div>
+        <div class="mb-2"><input name="email" class="form-control" placeholder="Email"></div>
+        <div><button class="btn btn-primary w-100">Add Member</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

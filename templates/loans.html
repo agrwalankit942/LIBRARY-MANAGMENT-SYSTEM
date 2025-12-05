@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card-custom">
+      <h5 class="mb-3">Issue a Copy</h5>
+      <form method="post">
+        <input type="hidden" name="action" value="issue">
+        <div class="mb-2">
+          <label class="form-label small">Copy</label>
+          <select name="copy_id" class="form-select" required>
+            <option value="">-- select copy --</option>
+            {% for c in available_copies %}
+            <option value="{{ c.copy_id }}">[{{ c.copy_id }}] {{ c.book.title if c.book else '' }} ({{ c.accession_no }})</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">Member</label>
+          <select name="member_id" class="form-select" required>
+            <option value="">-- select member --</option>
+            {% for m in members %}
+            <option value="{{ m.member_id }}">{{ m.full_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="mb-2">
+          <label class="form-label small">Loan Days</label>
+          <input type="number" name="loan_days" class="form-control" value="14">
+        </div>
+        <div><button class="btn btn-success w-100">Issue</button></div>
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card-custom">
+      <h5 class="mb-3">Active Loans</h5>
+      <div class="table-responsive">
+        <table class="table table-sm">
+          <thead><tr><th>Loan</th><th>Book</th><th>Member</th><th>Due</th><th>Status</th><th>Return</th></tr></thead>
+          <tbody>
+            {% for l in loans %}
+            <tr>
+              <td>{{ l.loan_id }}</td>
+              <td class="fw-semibold">{{ l.copy.book.title if l.copy and l.copy.book else '' }}</td>
+              <td class="kv">{{ l.member.full_name if l.member else '' }}</td>
+              <td class="kv">{{ l.due_date }}</td>
+              <td class="kv">{{ l.status }}</td>
+              <td>
+                {% if not l.returned_date %}
+                <form method="post" style="display:inline">
+                  <input type="hidden" name="action" value="return">
+                  <input type="hidden" name="loan_id" value="{{ l.loan_id }}">
+                  <button class="btn btn-sm btn-primary">Return</button>
+                </form>
+                {% else %}
+                <small class="kv">Returned • Fine: {{ l.fine_amount or 0 }}</small>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
